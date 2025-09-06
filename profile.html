@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodGuard Profile</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #667eea;
+      --secondary: #764ba2;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-800);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated Background */
+    .bg-animation {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .floating-shape {
+      position: absolute;
+      opacity: 0.1;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .shape-1 {
+      top: 15%;
+      left: 15%;
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 50%;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      top: 60%;
+      right: 10%;
+      width: 80px;
+      height: 80px;
+      background: white;
+      transform: rotate(45deg);
+      animation-delay: 3s;
+    }
+
+    .shape-3 {
+      bottom: 30%;
+      left: 5%;
+      width: 100px;
+      height: 100px;
+      background: white;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      animation-delay: 1.5s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-30px) rotate(120deg); }
+      66% { transform: translateY(15px) rotate(240deg); }
+    }
+
+    /* Main Container */
+    .profile-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 1;
+      animation: slideInUp 0.8s ease;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      font-size: 1rem;
+      color: var(--gray-500);
+      font-weight: 400;
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 4px;
+      margin: 2rem 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      width: 66%;
+      border-radius: 4px;
+      animation: progressFill 1s ease-out;
+    }
+
+    @keyframes progressFill {
+      from { width: 0%; }
+      to { width: 66%; }
+    }
+
+    .progress-text {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-top: 0.5rem;
+    }
+
+    /* Profile Preview */
+    .profile-preview {
+      display: none;
+      text-align: center;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+      border-radius: 16px;
+      border: 1px solid rgba(102, 126, 234, 0.1);
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 4px solid white;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    /* Form */
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 2px solid var(--gray-300);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-input:focus + .input-icon {
+      color: var(--primary);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 2.2rem;
+      color: var(--gray-400);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+      padding: 1rem;
+      font-family: inherit;
+    }
+
+    /* Health Conditions Selector */
+    .health-conditions {
+      margin: 1rem 0;
+    }
+
+    .conditions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .condition-tag {
+      padding: 0.5rem 0.75rem;
+      background: var(--gray-100);
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .condition-tag:hover {
+      background: rgba(102, 126, 234, 0.1);
+      border-color: var(--primary);
+    }
+
+    .condition-tag.selected {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-color: var(--primary);
+      transform: scale(1.02);
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Loading State */
+    .btn-loading {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+
+    .loading-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Info Tips */
+    .info-tip {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .profile-container {
+        padding: 2rem;
+        margin: 1rem;
+      }
+
+      .conditions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .page-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Hover Effects */
+    .profile-container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="bg-animation">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="profile-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="logo-text">FoodGuard</div>
+      </div>
+      <h1 class="page-title">Complete Your Profile</h1>
+      <p class="page-subtitle">Help us personalize your food analysis experience</p>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Step 2 of 3 - Almost there!</div>
+
+    <!-- Google Profile Preview -->
+    <div id="profilePreview" class="profile-preview">
+      <img id="profilePic" src="" alt="Profile Picture" class="profile-avatar">
+      <div id="profileName" class="profile-name"></div>
+    </div>
+
+    <!-- Profile Form -->
+    <form class="profile-form">
+      <!-- Name Input -->
+      <div class="form-group">
+        <label class="form-label" for="nameInput">
+          <i class="fas fa-user"></i>
+          Full Name
+        </label>
+        <input type="text" id="nameInput" class="form-input" placeholder="Enter your full name" required>
+        <i class="fas fa-user input-icon"></i>
+      </div>
+
+      <!-- Health Conditions -->
+      <div class="form-group">
+        <label class="form-label">
+          <i class="fas fa-heartbeat"></i>
+          Health Conditions
+        </label>
+        <div class="conditions-grid">
+          <div class="condition-tag" data-condition="diabetes">
+            <i class="fas fa-tint"></i>
+            Diabetes
+          </div>
+          <div class="condition-tag" data-condition="hypertension">
+            <i class="fas fa-heart"></i>
+            High Blood Pressure
+          </div>
+          <div class="condition-tag" data-condition="cholesterol">
+            <i class="fas fa-chart-line"></i>
+            High Cholesterol
+          </div>
+          <div class="condition-tag" data-condition="allergies">
+            <i class="fas fa-exclamation-triangle"></i>
+            Food Allergies
+          </div>
+          <div class="condition-tag" data-condition="weight">
+            <i class="fas fa-weight"></i>
+            Weight Management
+          </div>
+          <div class="condition-tag" data-condition="heart">
+            <i class="fas fa-heartbeat"></i>
+            Heart Disease
+          </div>
+        </div>
+        <div class="info-tip">
+          <i class="fas fa-info-circle"></i>
+          Select all that apply. This helps us provide personalized health warnings.
+        </div>
+      </div>
+
+      <!-- Custom Health Conditions -->
+      <div class="form-group">
+        <label class="form-label" for="healthInput">
+          <i class="fas fa-notes-medical"></i>
+          Additional Health Notes
+        </label>
+        <textarea 
+          id="healthInput" 
+          class="form-input form-textarea" 
+          placeholder="Any other health conditions or dietary restrictions we should know about?"
+          rows="3"
+        ></textarea>
+        <i class="fas fa-notes-medical input-icon"></i>
+      </div>
+
+      <!-- Submit Button -->
+      <button class="submit-btn" type="submit" id="submitBtn">
+        <i class="fas fa-arrow-right"></i>
+        <span>Continue to Food Scanner</span>
+      </button>
+    </form>
+
+    <!-- Info Section -->
+    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(102, 126, 234, 0.05); border-radius: 16px; border: 1px solid rgba(102, 126, 234, 0.1);">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--primary); font-weight: 600;">
+        <i class="fas fa-shield-alt"></i>
+        Why we need this information
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem; color: var(--gray-600);">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fas fa-check-circle" style="color: var(--success); font-size: 0.8rem;"></i>
+          <span>Personalized health alerts</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fas fa-check-circle" style="color: var(--success); font-size: 0.8rem;"></i>
+          <span>Better ingredient analysis</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fas fa-check-circle" style="color: var(--success); font-size: 0.8rem;"></i>
+          <span>Tailored food recommendations</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fas fa-check-circle" style="color: var(--success); font-size: 0.8rem;"></i>
+          <span>Your data stays private</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Global variables
+    const nameInput = document.getElementById("nameInput");
+    const healthInput = document.getElementById("healthInput");
+    const profilePic = document.getElementById("profilePic");
+    const profilePreview = document.getElementById("profilePreview");
+    const profileName = document.getElementById("profileName");
+    const submitBtn = document.getElementById("submitBtn");
+    
+    let selectedConditions = [];
+
+    // Auto-fill with Google info
+    window.addEventListener("DOMContentLoaded", () => {
+      const userName = localStorage.getItem("userName") || "";
+      const userPicture = localStorage.getItem("userPicture") || "";
+
+      if (userName) {
+        nameInput.value = userName;
+        profileName.textContent = userName;
+      }
+      
+      if (userPicture) {
+        profilePic.src = userPicture;
+        profilePreview.style.display = "block";
+      }
+
+      // Add animation delay to form elements
+      const formGroups = document.querySelectorAll('.form-group');
+      formGroups.forEach((group, index) => {
+        group.style.animation = `slideInUp 0.6s ease ${index * 0.1}s forwards`;
+        group.style.opacity = '0';
+      });
+    });
+
+    // Handle condition selection
+    const conditionTags = document.querySelectorAll('.condition-tag');
+    conditionTags.forEach(tag => {
+      tag.addEventListener('click', function() {
+        const condition = this.dataset.condition;
+        
+        if (this.classList.contains('selected')) {
+          // Remove condition
+          this.classList.remove('selected');
+          selectedConditions = selectedConditions.filter(c => c !== condition);
+        } else {
+          // Add condition
+          this.classList.add('selected');
+          selectedConditions.push(condition);
+        }
+        
+        // Add click animation
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = this.classList.contains('selected') ? 'scale(1.02)' : 'scale(1)';
+        }, 150);
+        
+        updateHealthInput();
+      });
+    });
+
+    // Update health input based on selected conditions
+    function updateHealthInput() {
+      const conditionNames = {
+        'diabetes': 'Diabetes',
+        'hypertension': 'High Blood Pressure',
+        'cholesterol': 'High Cholesterol',
+        'allergies': 'Food Allergies',
+        'weight': 'Weight Management',
+        'heart': 'Heart Disease'
+      };
+      
+      const selectedNames = selectedConditions.map(c => conditionNames[c]);
+      const currentText = healthInput.value;
+      
+      // Only update if user hasn't typed custom text
+      if (!currentText || selectedNames.some(name => currentText.includes(name))) {
+        healthInput.value = selectedNames.join(', ');
+      }
+    }
+
+    // Enhanced form submission
+    document.querySelector(".profile-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      const name = nameInput.value.trim();
+      const health = healthInput.value.trim();
+      
+      if (!name) {
+        showNotification('Please enter your name', 'error');
+        nameInput.focus();
+        return;
+      }
+      
+      // Show loading state
+      submitBtn.classList.add('btn-loading');
+      submitBtn.innerHTML = `
+        <div class="loading-spinner"></div>
+        <span>Saving Profile...</span>
+      `;
+      
+      // Save profile data
+      localStorage.setItem("userName", name);
+      localStorage.setItem("userHealth", health);
+      localStorage.setItem("selectedConditions", JSON.stringify(selectedConditions));
+      
+      // Show success and redirect
+      setTimeout(() => {
+        showNotification('Profile saved successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = "scan.html";
+        }, 1000);
+      }, 1500);
+    });
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        border-left: 4px solid ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--primary)'};
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      `;
+      
+      const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
+      const color = type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--danger)' : 'var(--primary)';
+      
+      notification.innerHTML = `
+        <i class="fas ${icon}" style="color: ${color};"></i>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // Add input animations
+    const inputs = document.querySelectorAll('.form-input');
+    inputs.forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.style.transform = 'translateY(-2px)';
+      });
+      
+      input.addEventListener('blur', function() {
+        this.parentElement.style.transform = 'translateY(0)';
+      });
+    });
+
+    // Add CSS for animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+      
+      .form-group {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      
+      @keyframes slideInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+
+</body>
+</html>
